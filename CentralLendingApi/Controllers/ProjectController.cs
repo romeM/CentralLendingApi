@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using CentralLendingApi.Data;
 using CentralLendingApi.Data.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,9 +11,9 @@ namespace CentralLendingApi.Controllers
     [ApiController]
     public class ProjectController : ControllerBase
     {
-        CentralLendingApiContext centralLendingApiContext;
+        CentralLendingContext centralLendingApiContext;
 
-        public ProjectController(CentralLendingApiContext centralLendingApiContext)
+        public ProjectController(CentralLendingContext centralLendingApiContext)
         {
             this.centralLendingApiContext = centralLendingApiContext;
         }
@@ -22,13 +21,13 @@ namespace CentralLendingApi.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<Project>> Get()
         {
-            return this.centralLendingApiContext.Projects.ToList();
+            return this.centralLendingApiContext.Project.ToList();
         }
         
         [HttpGet("{id}")]
         public ActionResult<Project> Get(int id)
         {
-            return this.centralLendingApiContext.Projects.First(p => p.Id == id);
+            return this.centralLendingApiContext.Project.First(p => p.Id == id);
         }
         
         [HttpPost]
