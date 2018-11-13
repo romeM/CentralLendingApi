@@ -1,0 +1,43 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2050
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CentralLendingApi", "CentralLendingApi\CentralLendingApi.csproj", "{3FE48115-75B8-46B9-ACFE-C9D879952EB7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CentralLendingApi.Data", "CentralLendingApi.Data\CentralLendingApi.Data.csproj", "{654D0444-8036-4140-B74D-FE3B1786DE0A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3FE48115-75B8-46B9-ACFE-C9D879952EB7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3FE48115-75B8-46B9-ACFE-C9D879952EB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3FE48115-75B8-46B9-ACFE-C9D879952EB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3FE48115-75B8-46B9-ACFE-C9D879952EB7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{654D0444-8036-4140-B74D-FE3B1786DE0A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{654D0444-8036-4140-B74D-FE3B1786DE0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{654D0444-8036-4140-B74D-FE3B1786DE0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{654D0444-8036-4140-B74D-FE3B1786DE0A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C7636254-6CB8-4257-9437-0F3167ACA9A4}
+	EndGlobalSection
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 3
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = https://crossrome.visualstudio.com/
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = CentralLendingApi.Data\\CentralLendingApi.Data.csproj
+		SccProjectName1 = CentralLendingApi.Data
+		SccLocalPath1 = CentralLendingApi.Data
+		SccProjectUniqueName2 = CentralLendingApi\\CentralLendingApi.csproj
+		SccProjectName2 = CentralLendingApi
+		SccLocalPath2 = CentralLendingApi
+	EndGlobalSection
+EndGlobal
