@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CentralLendingApi.Data\CentralLendingApi.Data.csproj" />
+    <ProjectReference Include="..\CentralLendingApi.Services\CentralLendingApi.Services.csproj" />
   </ItemGroup>
 
 </Project>
