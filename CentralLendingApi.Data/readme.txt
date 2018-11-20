@@ -1,0 +1,1 @@
+Scaffold-DbContext "Data Source=APILAPRMA01;Initial Catalog=CentralLending;Integrated Security=True;Persist Security Info=False;Pooling=False;MultipleActiveResultSets=False;Connect Timeout=60;Encrypt=False;TrustServerCertificate=True" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models -force

@@ -5,6 +5,12 @@ namespace CentralLendingApi.Data.Models
 {
     public partial class User
     {
+        public User()
+        {
+            UserMonthlyStatistics = new HashSet<UserMonthlyStatistics>();
+            UserProject = new HashSet<UserProject>();
+        }
+
         public int Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
@@ -15,5 +21,8 @@ namespace CentralLendingApi.Data.Models
         public string AboutMe { get; set; }
         public DateTime CreatedOn { get; set; }
         public DateTime UpdatedOn { get; set; }
+
+        public ICollection<UserMonthlyStatistics> UserMonthlyStatistics { get; set; }
+        public ICollection<UserProject> UserProject { get; set; }
     }
 }

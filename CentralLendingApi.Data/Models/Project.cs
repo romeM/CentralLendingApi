@@ -5,6 +5,11 @@ namespace CentralLendingApi.Data.Models
 {
     public partial class Project
     {
+        public Project()
+        {
+            UserProject = new HashSet<UserProject>();
+        }
+
         public int Id { get; set; }
         public string Name { get; set; }
         public string Platform { get; set; }
@@ -14,5 +19,7 @@ namespace CentralLendingApi.Data.Models
         public int? Term { get; set; }
         public string Link { get; set; }
         public DateTime PollDate { get; set; }
+
+        public ICollection<UserProject> UserProject { get; set; }
     }
 }

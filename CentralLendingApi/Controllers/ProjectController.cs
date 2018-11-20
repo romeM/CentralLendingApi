@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CentralLendingApi.Data.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace CentralLendingApi.Controllers
 {
@@ -19,15 +20,15 @@ namespace CentralLendingApi.Controllers
         }
         
         [HttpGet]
-        public ActionResult<IEnumerable<Project>> Get()
+        public async Task<IEnumerable<Project>> Get()
         {
-            return this.centralLendingApiContext.Project.ToList();
+            return await this.centralLendingApiContext.Project.ToListAsync();
         }
         
         [HttpGet("{id}")]
-        public ActionResult<Project> Get(int id)
+        public async Task<Project> Get(int id)
         {
-            return this.centralLendingApiContext.Project.First(p => p.Id == id);
+            return await this.centralLendingApiContext.Project.FirstAsync(p => p.Id == id);
         }
         
         [HttpPost]
