@@ -1,11 +1,13 @@
 ﻿using CentralLendingApi.Data.Models;
 using CentralLendingApi.Services.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace CentralLendingApi.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class UserMonthlyStatisticsController : ControllerBase

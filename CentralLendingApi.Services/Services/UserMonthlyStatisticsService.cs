@@ -24,7 +24,7 @@ namespace CentralLendingApi.Services.Services
 
         public async Task<ICollection<UserMonthlyStatistics>> GetByUserId(int user_id)
         {
-            return await this.context.UserMonthlyStatistics.Where(ums => ums.UserId == user_id).ToListAsync();
+            return await this.context.UserMonthlyStatistics.Where(ums => ums.UserId == user_id).OrderBy(ums => ums.Date).ToListAsync();
         }
     }
 }
