@@ -1,4 +1,5 @@
-﻿using CentralLendingApi.Data.Models;
+﻿using CentralLendingApi.Data.Dtos;
+using CentralLendingApi.Data.Models;
 using CentralLendingApi.Services.Helpers;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ namespace CentralLendingApi.Services.Services
         IEnumerable<User> GetAll();
         User GetById(int id);
         User Create(User user, string password);
-        void Update(User user, string password = null);
+        void Update(UserDto userDto);
         void Delete(int id);
     }
 
@@ -75,30 +76,28 @@ namespace CentralLendingApi.Services.Services
             return user;
         }
 
-        public void Update(User userParam, string password = null)
+        public void Update(UserDto userDto)
         {
-            var user = _context.User.Find(userParam.Id);
+            var user = _context.User.Find(userDto.Id);
 
             if (user == null)
                 throw new AppException("User not found");
 
-            if (userParam.UserName != user.UserName)
+            if (userDto.UserName != user.UserName)
             {
                 // username has changed so check if the new username is already taken
-                if (_context.User.Any(x => x.UserName == userParam.UserName))
-                    throw new AppException("Username " + userParam.UserName + " is already taken");
+                if (_context.User.Any(x => x.UserName == userDto.UserName))
+                    throw new AppException("Username " + userDto.UserName + " is already taken");
             }
 
             // update user properties
-            user.FirstName = userParam.FirstName;
-            user.LastName = userParam.LastName;
-            user.UserName = userParam.UserName;
-
+            HMapper.Mapper.Fill(userDto, user);
+            user.UpdatedOn = DateTime.Now;
             // update password if it was entered
-            if (!string.IsNullOrWhiteSpace(password))
+            if (!string.IsNullOrWhiteSpace(userDto.Password))
             {
                 byte[] passwordHash, passwordSalt;
-                CreatePasswordHash(password, out passwordHash, out passwordSalt);
+                CreatePasswordHash(userDto.Password, out passwordHash, out passwordSalt);
 
                 user.PasswordHash = passwordHash;
                 user.PasswordSalt = passwordSalt;

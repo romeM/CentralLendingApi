@@ -7,4 +7,5 @@
 	[Rate] [float] NULL,
 	[Term] [int] NULL,
 	[Link] [nvarchar](max) NULL,
+    [PollDate] DATETIME NULL, 
     CONSTRAINT [PK_Project] PRIMARY KEY CLUSTERED ([Id] ASC));

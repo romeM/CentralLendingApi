@@ -6,7 +6,12 @@
 	[Email] [nvarchar](255) NOT NULL,
 	[PasswordHash] [varbinary](max) NOT NULL,
 	[PasswordSalt] [varbinary](max) NOT NULL,
+	[Address] [nvarchar](255) NULL,
+	[City] [nvarchar](255) NULL,
+	[Country] [nvarchar](255) NULL,
+	[PostalCode] [nvarchar](10) NULL,
 	[AboutMe] [nvarchar](max) NULL,
+	[UserPhoto] varbinary(max) NULL,
 	[CreatedOn] [datetime] NOT NULL,
 	[UpdatedOn] [datetime] NOT NULL,
     CONSTRAINT [PK_User] PRIMARY KEY CLUSTERED ([Id] ASC));

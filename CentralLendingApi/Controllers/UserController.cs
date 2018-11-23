@@ -53,17 +53,9 @@ namespace CentralLendingApi.Controllers
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
-            var tokenString = tokenHandler.WriteToken(token);
-
+            user.Token = tokenHandler.WriteToken(token);
             // return basic user info (without password) and token to store client side
-            return Ok(new
-            {
-                Id = user.Id,
-                Username = user.UserName,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Token = tokenString
-            });
+            return Ok(user);
         }
 
         [AllowAnonymous]
@@ -107,14 +99,9 @@ namespace CentralLendingApi.Controllers
         [HttpPut("{id}")]
         public IActionResult Update(int id, [FromBody]UserDto userDto)
         {
-            // map dto to entity and set id
-            var user = HMapper.Mapper.Map<UserDto, User>(userDto);
-            user.Id = id;
-
             try
             {
-                userDto.UpdatedOn = DateTime.Now;
-                this.userService.Update(user, userDto.Password);
+                this.userService.Update(userDto);
                 return Ok();
             }
             catch (AppException ex)

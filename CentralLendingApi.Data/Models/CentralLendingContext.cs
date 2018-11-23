@@ -19,20 +19,22 @@ namespace CentralLendingApi.Data.Models
         public virtual DbSet<User> User { get; set; }
         public virtual DbSet<UserMonthlyStatistics> UserMonthlyStatistics { get; set; }
         public virtual DbSet<UserProject> UserProject { get; set; }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Data Source=APILAPRMA01;Initial Catalog=CentralLending;Integrated Security=True;Persist Security Info=False;Pooling=False;MultipleActiveResultSets=False;Connect Timeout=60;Encrypt=False;TrustServerCertificate=True");
-            }
-        }
-
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Project>(entity =>
+            {
+                entity.Property(e => e.PollDate).HasColumnType("datetime");
+            });
+
             modelBuilder.Entity<User>(entity =>
             {
+                entity.Property(e => e.Address).HasMaxLength(255);
+
+                entity.Property(e => e.City).HasMaxLength(255);
+
+                entity.Property(e => e.Country).HasMaxLength(255);
+
                 entity.Property(e => e.CreatedOn).HasColumnType("datetime");
 
                 entity.Property(e => e.Email)
@@ -50,6 +52,8 @@ namespace CentralLendingApi.Data.Models
                 entity.Property(e => e.PasswordHash).IsRequired();
 
                 entity.Property(e => e.PasswordSalt).IsRequired();
+
+                entity.Property(e => e.PostalCode).HasMaxLength(10);
 
                 entity.Property(e => e.UpdatedOn).HasColumnType("datetime");
 

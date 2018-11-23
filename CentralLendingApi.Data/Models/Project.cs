@@ -18,7 +18,7 @@ namespace CentralLendingApi.Data.Models
         public double? Rate { get; set; }
         public int? Term { get; set; }
         public string Link { get; set; }
-        public DateTime PollDate { get; set; }
+        public DateTime? PollDate { get; set; }
 
         public ICollection<UserProject> UserProject { get; set; }
     }
