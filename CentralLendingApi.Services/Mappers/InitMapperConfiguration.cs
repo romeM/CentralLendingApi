@@ -7,8 +7,8 @@ namespace CentralLendingApi.Services.Mappers
     {
         public static void Init(IMapperAPIInitializer initializer)
         {
-            initializer.Map<User, UserDto>();
-            initializer.Map<UserDto, User>();
+            initializer.Map<Person, UserDto>();
+            initializer.Map<UserDto, Person>();
         }
     }
 }

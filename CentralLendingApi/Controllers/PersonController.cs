@@ -19,16 +19,16 @@ namespace CentralLendingApi.Controllers
     [Authorize]
     [ApiController]
     [Route("[controller]")]
-    public class UsersController : ControllerBase
+    public class PersonController : ControllerBase
     {
-        private IUserService userService;
+        private IPersonService personService;
         private readonly AppSettings _appSettings;
 
-        public UsersController(
-            IUserService userService,
+        public PersonController(
+            IPersonService personService,
             IOptions<AppSettings> appSettings)
         {
-            this.userService = userService;
+            this.personService = personService;
             _appSettings = appSettings.Value;
         }
 
@@ -36,9 +36,9 @@ namespace CentralLendingApi.Controllers
         [HttpPost("authenticate")]
         public IActionResult Authenticate([FromBody]UserDto userDto)
         {
-            var user = userService.Authenticate(userDto.UserName, userDto.Password);
+            var person = personService.Authenticate(userDto.UserName, userDto.Password);
 
-            if (user == null)
+            if (person == null)
                 return BadRequest(new { message = "Username or password is incorrect" });
 
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -47,35 +47,29 @@ namespace CentralLendingApi.Controllers
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim(ClaimTypes.Name, user.Id.ToString())
+                    new Claim(ClaimTypes.Name, person.Id.ToString())
                 }),
                 Expires = DateTime.UtcNow.AddDays(7),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
-            user.Token = tokenHandler.WriteToken(token);
+            person.Token = tokenHandler.WriteToken(token);
             // return basic user info (without password) and token to store client side
-            return Ok(user);
+            return Ok(person);
         }
 
         [AllowAnonymous]
         [HttpPost("register")]
         public IActionResult Register([FromBody]UserDto userDto)
         {
-            // map dto to entity
-            var user = HMapper.Mapper.Map<UserDto, User>(userDto);
-
+            var person = HMapper.Mapper.Map<UserDto, Person>(userDto);
             try
             {
-                // save 
-                user.CreatedOn = DateTime.Now;
-                user.UpdatedOn = DateTime.Now;
-                userService.Create(user, userDto.Password);
+                personService.Create(person, userDto.Password);
                 return Ok();
             }
             catch (AppException ex)
             {
-                // return error message if there was an exception
                 return BadRequest(new { message = ex.Message });
             }
         }
@@ -83,16 +77,16 @@ namespace CentralLendingApi.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            var users = userService.GetAll();
-            var userDtos = HMapper.Mapper.Map<IEnumerable<User>,IEnumerable <UserDto>>(users);
+            var persons = personService.GetAll();
+            var userDtos = HMapper.Mapper.Map<IEnumerable<Person>,IEnumerable <UserDto>>(persons);
             return Ok(userDtos);
         }
 
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
-            var user = userService.GetById(id);
-            var userDto = HMapper.Mapper.Map<User, UserDto>(user);
+            var person = personService.GetById(id);
+            var userDto = HMapper.Mapper.Map<Person, UserDto>(person);
             return Ok(userDto);
         }
 
@@ -101,7 +95,7 @@ namespace CentralLendingApi.Controllers
         {
             try
             {
-                this.userService.Update(userDto);
+                this.personService.Update(userDto);
                 return Ok();
             }
             catch (AppException ex)
@@ -114,7 +108,7 @@ namespace CentralLendingApi.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            userService.Delete(id);
+            personService.Delete(id);
             return Ok();
         }
     }

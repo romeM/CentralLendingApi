@@ -53,10 +53,10 @@ namespace CentralLendingApi
                 {
                     OnTokenValidated = context =>
                     {
-                        var userService = context.HttpContext.RequestServices.GetRequiredService<IUserService>();
-                        var userId = int.Parse(context.Principal.Identity.Name);
-                        var user = userService.GetById(userId);
-                        if (user == null)
+                        var personService = context.HttpContext.RequestServices.GetRequiredService<IPersonService>();
+                        var personId = int.Parse(context.Principal.Identity.Name);
+                        var person = personService.GetById(personId);
+                        if (person == null)
                         {
                             // return unauthorized if user no longer exists
                             context.Fail("Unauthorized");

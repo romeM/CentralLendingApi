@@ -7,112 +7,114 @@ using System.Linq;
 
 namespace CentralLendingApi.Services.Services
 {
-    public interface IUserService
+    public interface IPersonService
     {
-        User Authenticate(string username, string password);
-        IEnumerable<User> GetAll();
-        User GetById(int id);
-        User Create(User user, string password);
+        Person Authenticate(string username, string password);
+        IEnumerable<Person> GetAll();
+        Person GetById(int id);
+        Person Create(Person person, string password);
         void Update(UserDto userDto);
         void Delete(int id);
     }
 
-    public class UserService : IUserService
+    public class PersonService : IPersonService
     {
         private CentralLendingContext _context;
 
-        public UserService(CentralLendingContext context)
+        public PersonService(CentralLendingContext context)
         {
             _context = context;
         }
 
-        public User Authenticate(string username, string password)
+        public Person Authenticate(string username, string password)
         {
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
                 return null;
 
-            var user = _context.User.SingleOrDefault(x => x.UserName == username);
+            var person = _context.Person.SingleOrDefault(x => x.UserName == username);
 
             // check if username exists
-            if (user == null)
+            if (person == null)
                 return null;
 
             // check if password is correct
-            if (!VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
+            if (!VerifyPasswordHash(password, person.PasswordHash, person.PasswordSalt))
                 return null;
 
             // authentication successful
-            return user;
+            return person;
         }
 
-        public IEnumerable<User> GetAll()
+        public IEnumerable<Person> GetAll()
         {
-            return _context.User;
+            return _context.Person;
         }
 
-        public User GetById(int id)
+        public Person GetById(int id)
         {
-            return _context.User.Find(id);
+            return _context.Person.Find(id);
         }
 
-        public User Create(User user, string password)
+        public Person Create(Person person, string password)
         {
             // validation
             if (string.IsNullOrWhiteSpace(password))
                 throw new AppException("Password is required");
 
-            if (_context.User.Any(x => x.UserName == user.UserName))
-                throw new AppException("Username \"" + user.UserName + "\" is already taken");
+            if (_context.Person.Any(x => x.UserName == person.UserName))
+                throw new AppException("Username \"" + person.UserName + "\" is already taken");
 
             byte[] passwordHash, passwordSalt;
             CreatePasswordHash(password, out passwordHash, out passwordSalt);
 
-            user.PasswordHash = passwordHash;
-            user.PasswordSalt = passwordSalt;
+            person.CreatedOn = DateTime.Now;
+            person.UpdatedOn = DateTime.Now;
+            person.PasswordHash = passwordHash;
+            person.PasswordSalt = passwordSalt;
 
-            _context.User.Add(user);
+            _context.Person.Add(person);
             _context.SaveChanges();
 
-            return user;
+            return person;
         }
 
         public void Update(UserDto userDto)
         {
-            var user = _context.User.Find(userDto.Id);
+            var person = _context.Person.Find(userDto.Id);
 
-            if (user == null)
+            if (person == null)
                 throw new AppException("User not found");
 
-            if (userDto.UserName != user.UserName)
+            if (userDto.UserName != person.UserName)
             {
                 // username has changed so check if the new username is already taken
-                if (_context.User.Any(x => x.UserName == userDto.UserName))
+                if (_context.Person.Any(x => x.UserName == userDto.UserName))
                     throw new AppException("Username " + userDto.UserName + " is already taken");
             }
 
             // update user properties
-            HMapper.Mapper.Fill(userDto, user);
-            user.UpdatedOn = DateTime.Now;
+            HMapper.Mapper.Fill(userDto, person);
+            person.UpdatedOn = DateTime.Now;
             // update password if it was entered
             if (!string.IsNullOrWhiteSpace(userDto.Password))
             {
                 byte[] passwordHash, passwordSalt;
                 CreatePasswordHash(userDto.Password, out passwordHash, out passwordSalt);
 
-                user.PasswordHash = passwordHash;
-                user.PasswordSalt = passwordSalt;
+                person.PasswordHash = passwordHash;
+                person.PasswordSalt = passwordSalt;
             }
 
-            _context.User.Update(user);
+            _context.Person.Update(person);
             _context.SaveChanges();
         }
 
         public void Delete(int id)
         {
-            var user = _context.User.Find(id);
+            var user = _context.Person.Find(id);
             if (user != null)
             {
-                _context.User.Remove(user);
+                _context.Person.Remove(user);
                 _context.SaveChanges();
             }
         }

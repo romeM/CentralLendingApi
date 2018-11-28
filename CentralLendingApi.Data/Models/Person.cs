@@ -3,12 +3,12 @@ using System.Collections.Generic;
 
 namespace CentralLendingApi.Data.Models
 {
-    public partial class User
+    public partial class Person
     {
-        public User()
+        public Person()
         {
-            UserMonthlyStatistics = new HashSet<UserMonthlyStatistics>();
-            UserProject = new HashSet<UserProject>();
+            PersonMonthlyStatistics = new HashSet<PersonMonthlyStatistics>();
+            PersonProject = new HashSet<PersonProject>();
         }
 
         public int Id { get; set; }
@@ -27,7 +27,7 @@ namespace CentralLendingApi.Data.Models
         public DateTime CreatedOn { get; set; }
         public DateTime UpdatedOn { get; set; }
 
-        public ICollection<UserMonthlyStatistics> UserMonthlyStatistics { get; set; }
-        public ICollection<UserProject> UserProject { get; set; }
+        public ICollection<PersonMonthlyStatistics> PersonMonthlyStatistics { get; set; }
+        public ICollection<PersonProject> PersonProject { get; set; }
     }
 }

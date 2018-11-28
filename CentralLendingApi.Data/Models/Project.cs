@@ -7,7 +7,7 @@ namespace CentralLendingApi.Data.Models
     {
         public Project()
         {
-            UserProject = new HashSet<UserProject>();
+            PersonProject = new HashSet<PersonProject>();
         }
 
         public int Id { get; set; }
@@ -20,6 +20,6 @@ namespace CentralLendingApi.Data.Models
         public string Link { get; set; }
         public DateTime? PollDate { get; set; }
 
-        public ICollection<UserProject> UserProject { get; set; }
+        public ICollection<PersonProject> PersonProject { get; set; }
     }
 }

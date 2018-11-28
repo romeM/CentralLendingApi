@@ -60,10 +60,10 @@
     <Folder Include="Tables" />
   </ItemGroup>
   <ItemGroup>
-    <Build Include="Tables\User_Project.sql" />
-    <Build Include="Tables\User.sql" />
+    <Build Include="Tables\Person_Project.sql" />
+    <Build Include="Tables\Person.sql" />
     <Build Include="Tables\Project.sql" />
-    <Build Include="Tables\User_MonthlyStatistics.sql" />
+    <Build Include="Tables\Person_MonthlyStatistics.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="CentralLendingApi.DB.refactorlog" />

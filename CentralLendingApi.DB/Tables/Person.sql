@@ -1,4 +1,4 @@
-﻿CREATE TABLE [dbo].[User](
+﻿CREATE TABLE [dbo].[Person](
 	[Id] [int] IDENTITY(1,1) NOT NULL,
 	[FirstName] [nvarchar](255) NOT NULL,
 	[LastName] [nvarchar](255) NOT NULL,
@@ -14,4 +14,4 @@
 	[Image] NVARCHAR(MAX) NULL,
 	[CreatedOn] [datetime] NOT NULL,
 	[UpdatedOn] [datetime] NOT NULL,
-    CONSTRAINT [PK_User] PRIMARY KEY CLUSTERED ([Id] ASC));
+    CONSTRAINT [PK_Person] PRIMARY KEY CLUSTERED ([Id] ASC));
