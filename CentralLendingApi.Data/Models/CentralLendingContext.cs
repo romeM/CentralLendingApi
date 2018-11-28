@@ -19,7 +19,16 @@ namespace CentralLendingApi.Data.Models
         public virtual DbSet<User> User { get; set; }
         public virtual DbSet<UserMonthlyStatistics> UserMonthlyStatistics { get; set; }
         public virtual DbSet<UserProject> UserProject { get; set; }
-        
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
+                optionsBuilder.UseSqlServer("Data Source=APILAPRMA01;Initial Catalog=CentralLending;Integrated Security=True;Persist Security Info=False;Pooling=False;MultipleActiveResultSets=False;Connect Timeout=60;Encrypt=False;TrustServerCertificate=True");
+            }
+        }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Project>(entity =>

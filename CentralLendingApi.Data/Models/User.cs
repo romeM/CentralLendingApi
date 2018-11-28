@@ -23,7 +23,7 @@ namespace CentralLendingApi.Data.Models
         public string Country { get; set; }
         public string PostalCode { get; set; }
         public string AboutMe { get; set; }
-        public byte[] UserPhoto { get; set; }
+        public string Image { get; set; }
         public DateTime CreatedOn { get; set; }
         public DateTime UpdatedOn { get; set; }
 

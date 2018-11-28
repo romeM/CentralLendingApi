@@ -11,7 +11,7 @@
 	[Country] [nvarchar](255) NULL,
 	[PostalCode] [nvarchar](10) NULL,
 	[AboutMe] [nvarchar](max) NULL,
-	[UserPhoto] varbinary(max) NULL,
+	[Image] NVARCHAR(MAX) NULL,
 	[CreatedOn] [datetime] NOT NULL,
 	[UpdatedOn] [datetime] NOT NULL,
     CONSTRAINT [PK_User] PRIMARY KEY CLUSTERED ([Id] ASC));

@@ -17,5 +17,6 @@ namespace CentralLendingApi.Data.Dtos
         public string AboutMe { get; set; }
         public DateTime CreatedOn { get; set; }
         public DateTime UpdatedOn { get; set; }
+        public string Image { get; set; }
     }
 }
