@@ -15,7 +15,7 @@ namespace CentralLendingApi.Controllers
     {
         IProjectService projectService;
 
-        public ProjectController(CentralLendingContext centralLendingApiContext, IProjectService projectService)
+        public ProjectController(IProjectService projectService)
         {
             this.projectService = projectService;
         }
