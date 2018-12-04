@@ -31,7 +31,7 @@ namespace CentralLendingApi.Services.Services
         }
         public async Task AddPersonToProject(PersonProjectDto personProjectDto)
         {
-            PersonProject personProject = this.context.PersonProject.SingleOrDefault(pp => pp.PersonId == personProjectDto.PersonId && pp.PersonId == personProjectDto.ProjectId);
+            PersonProject personProject = this.context.PersonProject.SingleOrDefault(pp => pp.PersonId == personProjectDto.PersonId && pp.ProjectId == personProjectDto.ProjectId);
             if (personProject != null)
             {
                 personProject.Amount = personProjectDto.Amount;
