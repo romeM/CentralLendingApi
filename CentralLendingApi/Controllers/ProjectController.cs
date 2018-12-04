@@ -45,9 +45,9 @@ namespace CentralLendingApi.Controllers
         }
         
         [HttpPost]
-        public async Task Post([FromBody] PersonProjectDto personProjectDto)
+        public async Task<int> Post([FromBody] PersonProjectDto personProjectDto)
         {
-            await this.projectService.AddPersonToProject(personProjectDto);
+            return await this.projectService.AddPersonProject(personProjectDto);
         }
         
         [HttpPut("{id}")]
@@ -56,8 +56,9 @@ namespace CentralLendingApi.Controllers
         }
         
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task Delete(int id)
         {
+            await this.projectService.DeletePersonProject(id);
         }
     }
 }

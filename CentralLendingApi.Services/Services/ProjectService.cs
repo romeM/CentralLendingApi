@@ -12,7 +12,8 @@ namespace CentralLendingApi.Services.Services
 {
     public interface IProjectService
     {
-        Task AddPersonToProject(PersonProjectDto personProjectDto);
+        Task<int> AddPersonProject(PersonProjectDto personProjectDto);
+        Task DeletePersonProject(int personProject_Id);
         Task<IEnumerable<Project>> Get();
         Task<Project> Get(int id);
         Task<IEnumerable<Project>> Suggest(string term);
@@ -29,17 +30,29 @@ namespace CentralLendingApi.Services.Services
             this.context = context;
             this.httpContextAccessor = httpContextAccessor;
         }
-        public async Task AddPersonToProject(PersonProjectDto personProjectDto)
+        public async Task<int> AddPersonProject(PersonProjectDto personProjectDto)
         {
-            PersonProject personProject = this.context.PersonProject.SingleOrDefault(pp => pp.PersonId == personProjectDto.PersonId && pp.ProjectId == personProjectDto.ProjectId);
-            if (personProject != null)
+            PersonProject personProject;
+            if (personProjectDto.Id > 0)
             {
+                personProject = this.context.PersonProject.SingleOrDefault(pp => pp.Id == personProjectDto.Id);
                 personProject.Amount = personProjectDto.Amount;
                 personProject.StartDate = personProjectDto.StartDate;
             }
             else
-                await context.PersonProject.AddAsync(HMapper.Mapper.Map<PersonProjectDto, PersonProject>(personProjectDto));
+            {
+                personProject = HMapper.Mapper.Map<PersonProjectDto, PersonProject>(personProjectDto);
+                await context.PersonProject.AddAsync(personProject);
+            }
 
+            await context.SaveChangesAsync();
+            return personProject.Id;
+        }
+
+        public async Task DeletePersonProject(int personProject_Id)
+        {
+            PersonProject personProject = this.context.PersonProject.SingleOrDefault(pp => pp.Id == personProject_Id);
+            context.PersonProject.Remove(personProject);
             await context.SaveChangesAsync();
         }
 
