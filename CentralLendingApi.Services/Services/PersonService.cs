@@ -13,7 +13,7 @@ namespace CentralLendingApi.Services.Services
         IEnumerable<Person> GetAll();
         Person GetById(int id);
         Person Create(Person person, string password);
-        void Update(UserDto userDto);
+        void Update(PersonDto userDto);
         void Delete(int id);
     }
 
@@ -78,7 +78,7 @@ namespace CentralLendingApi.Services.Services
             return person;
         }
 
-        public void Update(UserDto userDto)
+        public void Update(PersonDto userDto)
         {
             var person = _context.Person.Find(userDto.Id);
 

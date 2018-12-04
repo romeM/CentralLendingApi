@@ -34,7 +34,7 @@ namespace CentralLendingApi.Controllers
 
         [AllowAnonymous]
         [HttpPost("authenticate")]
-        public IActionResult Authenticate([FromBody]UserDto userDto)
+        public IActionResult Authenticate([FromBody]PersonDto userDto)
         {
             var person = personService.Authenticate(userDto.UserName, userDto.Password);
 
@@ -60,9 +60,9 @@ namespace CentralLendingApi.Controllers
 
         [AllowAnonymous]
         [HttpPost("register")]
-        public IActionResult Register([FromBody]UserDto userDto)
+        public IActionResult Register([FromBody]PersonDto userDto)
         {
-            var person = HMapper.Mapper.Map<UserDto, Person>(userDto);
+            var person = HMapper.Mapper.Map<PersonDto, Person>(userDto);
             try
             {
                 personService.Create(person, userDto.Password);
@@ -78,7 +78,7 @@ namespace CentralLendingApi.Controllers
         public IActionResult GetAll()
         {
             var persons = personService.GetAll();
-            var userDtos = HMapper.Mapper.Map<IEnumerable<Person>,IEnumerable <UserDto>>(persons);
+            var userDtos = HMapper.Mapper.Map<IEnumerable<Person>,IEnumerable <PersonDto>>(persons);
             return Ok(userDtos);
         }
 
@@ -86,12 +86,12 @@ namespace CentralLendingApi.Controllers
         public IActionResult GetById(int id)
         {
             var person = personService.GetById(id);
-            var userDto = HMapper.Mapper.Map<Person, UserDto>(person);
+            var userDto = HMapper.Mapper.Map<Person, PersonDto>(person);
             return Ok(userDto);
         }
 
         [HttpPut("{id}")]
-        public IActionResult Update(int id, [FromBody]UserDto userDto)
+        public IActionResult Update(int id, [FromBody]PersonDto userDto)
         {
             try
             {
@@ -110,6 +110,12 @@ namespace CentralLendingApi.Controllers
         {
             personService.Delete(id);
             return Ok();
+        }
+
+
+        [HttpPost("addProject")]
+        public void AddProject([FromBody] PersonProjectDto value)
+        {
         }
     }
 }

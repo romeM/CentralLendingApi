@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using CentralLendingApi.Data.Dtos;
 using CentralLendingApi.Data.Models;
+using CentralLendingApi.Services.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace CentralLendingApi.Controllers
 {
@@ -14,32 +13,45 @@ namespace CentralLendingApi.Controllers
     [ApiController]
     public class ProjectController : ControllerBase
     {
-        CentralLendingContext centralLendingApiContext;
+        IProjectService projectService;
 
-        public ProjectController(CentralLendingContext centralLendingApiContext)
+        public ProjectController(CentralLendingContext centralLendingApiContext, IProjectService projectService)
         {
-            this.centralLendingApiContext = centralLendingApiContext;
+            this.projectService = projectService;
         }
         
         [HttpGet]
         public async Task<IEnumerable<Project>> Get()
         {
-            return await this.centralLendingApiContext.Project.ToListAsync();
+            return await this.projectService.Get();
         }
-        
+
+        [HttpGet("suggest/{term}")]
+        public async Task<IEnumerable<Project>> Suggest(string term)
+        {
+            return await this.projectService.Suggest(term);
+        }
+
+        [HttpGet("person")]
+        public async Task<IEnumerable<PersonProjectDto>> GetPersonProjects()
+        {
+            return await this.projectService.GetPersonProjects();
+        }
+
         [HttpGet("{id}")]
         public async Task<Project> Get(int id)
         {
-            return await this.centralLendingApiContext.Project.FirstAsync(p => p.Id == id);
+            return await this.projectService.Get(id);
         }
         
         [HttpPost]
-        public void Post([FromBody] Project value)
+        public async Task Post([FromBody] PersonProjectDto personProjectDto)
         {
+            await this.projectService.AddPersonToProject(personProjectDto);
         }
         
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] Project value)
+        public void Put(int id, [FromBody] ProjectDto value)
         {
         }
         

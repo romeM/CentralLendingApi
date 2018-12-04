@@ -19,7 +19,7 @@ namespace CentralLendingApi.Data.Models
         public virtual DbSet<PersonMonthlyStatistics> PersonMonthlyStatistics { get; set; }
         public virtual DbSet<PersonProject> PersonProject { get; set; }
         public virtual DbSet<Project> Project { get; set; }
-        
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Person>(entity =>
@@ -91,7 +91,7 @@ namespace CentralLendingApi.Data.Models
 
                 entity.Property(e => e.ProjectId).HasColumnName("Project_Id");
 
-                entity.Property(e => e.ProjectStartDate).HasColumnType("date");
+                entity.Property(e => e.StartDate).HasColumnType("date");
 
                 entity.HasOne(d => d.Person)
                     .WithMany(p => p.PersonProject)
