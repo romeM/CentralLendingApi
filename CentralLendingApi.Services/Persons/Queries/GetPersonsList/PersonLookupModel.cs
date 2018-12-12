@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 
-namespace CentralLendingApi.Data.Dtos
+namespace CentralLendingApi.Services.Persons.Queries.GetPersonsList
 {
-    public class ProjectDto
+    public class PersonLookupModel
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -13,6 +12,6 @@ namespace CentralLendingApi.Data.Dtos
         public double? Rate { get; set; }
         public int? Term { get; set; }
         public string Link { get; set; }
-        public DateTime? PollDate { get; set; }
+        public DateTime? StartDate { get; set; }
     }
 }

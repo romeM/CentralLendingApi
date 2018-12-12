@@ -1,71 +1,44 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.AspNetCore.Mvc;
-using System.IdentityModel.Tokens.Jwt;
-using CentralLendingApi.Helpers;
-using Microsoft.Extensions.Options;
-using System.Text;
-using Microsoft.IdentityModel.Tokens;
-using System.Security.Claims;
+﻿using CentralLendingApi.Services.Exceptions;
+using CentralLendingApi.Services.Persons.Commands.Authenticate;
+using CentralLendingApi.Services.Persons.Commands.Register;
+using CentralLendingApi.Services.Persons.Commands.UpdatePerson;
+using CentralLendingApi.Services.Persons.Commands.AddPersonProject;
+using CentralLendingApi.Services.Persons.Queries.GetPersonDetail;
+using CentralLendingApi.Services.Persons.Queries.GetPersonsList;
 using Microsoft.AspNetCore.Authorization;
-using CentralLendingApi.Services;
-using CentralLendingApi.Data.Dtos;
-using CentralLendingApi.Services.Services;
+using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
+using CentralLendingApi.Services.Persons.Commands.DeletePerson;
 using CentralLendingApi.Data.Models;
-using CentralLendingApi.Services.Helpers;
+using CentralLendingApi.Services.Persons.Queries.GetPersonProjectsList;
+using CentralLendingApi.Services.Persons.Commands.DeletePersonProject;
 
 namespace CentralLendingApi.Controllers
 {
     [Authorize]
-    [ApiController]
-    [Route("[controller]")]
-    public class PersonController : ControllerBase
+    public class PersonController : BaseController
     {
-        private IPersonService personService;
-        private readonly AppSettings _appSettings;
-
-        public PersonController(
-            IPersonService personService,
-            IOptions<AppSettings> appSettings)
-        {
-            this.personService = personService;
-            _appSettings = appSettings.Value;
-        }
-
         [AllowAnonymous]
         [HttpPost("authenticate")]
-        public IActionResult Authenticate([FromBody]PersonDto userDto)
+        public async Task<IActionResult> Authenticate([FromBody]AuthenticateCommand authenticateCommand)
         {
-            var person = personService.Authenticate(userDto.UserName, userDto.Password);
-
-            if (person == null)
-                return BadRequest(new { message = "Username or password is incorrect" });
-
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes("SECRET_KEY_123456789");
-            var tokenDescriptor = new SecurityTokenDescriptor
+            try
             {
-                Subject = new ClaimsIdentity(new Claim[]
-                {
-                    new Claim(ClaimTypes.Name, person.Id.ToString())
-                }),
-                Expires = DateTime.UtcNow.AddDays(7),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            person.Token = tokenHandler.WriteToken(token);
-            // return basic user info (without password) and token to store client side
-            return Ok(person);
+                return Ok(await Mediator.Send(authenticateCommand));
+            }
+            catch (AppException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         [AllowAnonymous]
         [HttpPost("register")]
-        public IActionResult Register([FromBody]PersonDto userDto)
+        public async Task<IActionResult> Register([FromBody]RegisterCommand registerCommand)
         {
-            var person = HMapper.Mapper.Map<PersonDto, Person>(userDto);
             try
             {
-                personService.Create(person, userDto.Password);
+                await Mediator.Send(registerCommand);
                 return Ok();
             }
             catch (AppException ex)
@@ -75,27 +48,25 @@ namespace CentralLendingApi.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            var persons = personService.GetAll();
-            var userDtos = HMapper.Mapper.Map<IEnumerable<Person>,IEnumerable <PersonDto>>(persons);
-            return Ok(userDtos);
+            var personLookupModels = await Mediator.Send(new GetPersonsListQuery());
+            return Ok(personLookupModels);
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetById(int id)
+        public async Task<IActionResult> GetById(int id)
         {
-            var person = personService.GetById(id);
-            var userDto = HMapper.Mapper.Map<Person, PersonDto>(person);
-            return Ok(userDto);
+            PersonDetailModel personDetailModel = await Mediator.Send(new GetPersonDetailQuery() { Id = id });
+            return Ok(personDetailModel);
         }
 
         [HttpPut("{id}")]
-        public IActionResult Update(int id, [FromBody]PersonDto userDto)
+        public async Task<IActionResult> Update(int id, UpdatePersonCommand updatePersonCommand)
         {
             try
             {
-                this.personService.Update(userDto);
+                await Mediator.Send(updatePersonCommand);
                 return Ok();
             }
             catch (AppException ex)
@@ -106,16 +77,37 @@ namespace CentralLendingApi.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            personService.Delete(id);
-            return Ok();
+            try
+            {
+                await Mediator.Send(new DeletePersonCommand() { Id = id });
+                return Ok();
+            }
+            catch (AppException ex)
+            {
+                // return error message if there was an exception
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
-
-        [HttpPost("addProject")]
-        public void AddProject([FromBody] PersonProjectDto value)
+        [HttpPost("project")]
+        public async Task<int> Post([FromBody] AddPersonProjectCommand addPersonProjectCommand)
         {
+            return await Mediator.Send(addPersonProjectCommand);
+        }
+        
+        [HttpGet("projects")]
+        public async Task<ActionResult<PersonProject[]>> GetPersonProjects()
+        {
+            return Ok(await Mediator.Send(new GetPersonProjectsListQuery() { Id = int.Parse(HttpContext.User.Identity.Name) }));
+        }
+
+        [HttpDelete("project/{id}")]
+        public async Task<ActionResult> Remove(int id)
+        {
+            await Mediator.Send(new RemovePersonProjectCommand { Id = id });
+            return Ok();
         }
     }
 }

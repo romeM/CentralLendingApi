@@ -1,19 +1,23 @@
 ﻿using CentralLendingApi.Configuration;
 using CentralLendingApi.Data.Models;
-using CentralLendingApi.Services.Services;
+using CentralLendingApi.Services.Infrastructure;
+using CentralLendingApi.Services.Persons.Queries.GetPersonDetail;
+using CentralLendingApi.Services.Projects.Queries.GetProjectDetail;
+using FluentValidation.AspNetCore;
 using HMapper;
+using MediatR;
+using MediatR.Pipeline;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.Swagger;
+using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace CentralLendingApi
 {
@@ -36,16 +40,30 @@ namespace CentralLendingApi
         {
             services.AddCors();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+                .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<GetProjectDetailQueryValidator>())
                 .AddJsonOptions(
             options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
                 );
+
+            // Add DbContext using SQL Server Provider
             services.AddDbContext<CentralLendingContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+            var key = Encoding.ASCII.GetBytes("SECRET_KEY_123456789"); //"Encoding.ASCII.GetBytes(Configuration.GetSection("AppSettings")["Secret"]);
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new Info { Title = "Central Lending Api", Version = "v1" });
+                c.AddSecurityDefinition("Bearer", new ApiKeyScheme
+                {
+                    Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+                    Name = "Authorization",
+                    In = "header",
+                    Type = "apiKey"
+                });
             });
 
-            var key = Encoding.ASCII.GetBytes("SECRET_KEY_123456789"); //"Encoding.ASCII.GetBytes(Configuration.GetSection("AppSettings")["Secret"]);
+            // Authentication
+            
             services.AddAuthentication(x =>
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -55,17 +73,16 @@ namespace CentralLendingApi
             {
                 x.Events = new JwtBearerEvents
                 {
-                    OnTokenValidated = context =>
+                    OnTokenValidated = async context =>
                     {
-                        var personService = context.HttpContext.RequestServices.GetRequiredService<IPersonService>();
+                        var mediator = context.HttpContext.RequestServices.GetService<IMediator>();
                         var personId = int.Parse(context.Principal.Identity.Name);
-                        var person = personService.GetById(personId);
+                        var person = await mediator.Send(new GetPersonDetailQuery() { Id = personId });
                         if (person == null)
                         {
                             // return unauthorized if user no longer exists
                             context.Fail("Unauthorized");
                         }
-                        return Task.CompletedTask;
                     }
                 };
                 x.RequireHttpsMetadata = false;
@@ -79,6 +96,11 @@ namespace CentralLendingApi
                 };
             });
             services.AddHttpContextAccessor();
+
+            //Dependency Injection
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestPreProcessorBehavior<,>));
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestValidationBehavior<,>));
+            services.AddMediatR(typeof(GetProjectDetailQueryHandler).GetTypeInfo().Assembly);
             services.AddHandlers("CentralLendingApi.Data");
             services.AddHandlers("CentralLendingApi.Services");
         }

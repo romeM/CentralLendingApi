@@ -19,7 +19,7 @@ namespace CentralLendingApi.Data.Models
         public virtual DbSet<PersonMonthlyStatistics> PersonMonthlyStatistics { get; set; }
         public virtual DbSet<PersonProject> PersonProject { get; set; }
         public virtual DbSet<Project> Project { get; set; }
-
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Person>(entity =>
@@ -107,6 +107,8 @@ namespace CentralLendingApi.Data.Models
             modelBuilder.Entity<Project>(entity =>
             {
                 entity.Property(e => e.PollDate).HasColumnType("datetime");
+
+                entity.Property(e => e.StartDate).HasColumnType("datetime");
             });
         }
     }

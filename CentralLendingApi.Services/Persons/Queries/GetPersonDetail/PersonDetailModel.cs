@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace CentralLendingApi.Data.Dtos
+namespace CentralLendingApi.Services.Persons.Queries.GetPersonDetail
 {
-    public class PersonDto
+    public class PersonDetailModel
     {
         public int Id { get; set; }
         public string FirstName { get; set; }

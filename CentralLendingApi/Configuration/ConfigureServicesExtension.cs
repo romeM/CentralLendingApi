@@ -13,7 +13,7 @@ namespace CentralLendingApi.Configuration
             var assemblyPath = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), assemblyName + ".dll");
             var assembly = Assembly.Load(AssemblyLoadContext.GetAssemblyName(assemblyPath));
 
-            var classTypes = assembly.ExportedTypes.Select(t => IntrospectionExtensions.GetTypeInfo(t)).Where(t => t.IsClass && !t.IsAbstract);
+            var classTypes = assembly.ExportedTypes.Select(t => IntrospectionExtensions.GetTypeInfo(t)).Where(t => t.IsClass && !t.IsAbstract && t.FullName.EndsWith("Service"));
 
             foreach (var type in classTypes)
             {

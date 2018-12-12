@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 
-namespace CentralLendingApi.Services.Helpers
+namespace CentralLendingApi.Services.Exceptions
 {
     public class AppException : Exception
     {

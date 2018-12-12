@@ -8,4 +8,5 @@
 	[Term] [int] NULL,
 	[Link] [nvarchar](max) NULL,
     [PollDate] DATETIME NULL, 
+    [StartDate] DATETIME NULL, 
     CONSTRAINT [PK_Project] PRIMARY KEY CLUSTERED ([Id] ASC));

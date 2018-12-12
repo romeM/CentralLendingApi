@@ -1,5 +1,10 @@
-﻿using CentralLendingApi.Data.Dtos;
-using CentralLendingApi.Data.Models;
+﻿using CentralLendingApi.Data.Models;
+using CentralLendingApi.Services.Persons.Commands.AddPersonProject;
+using CentralLendingApi.Services.Persons.Commands.UpdatePerson;
+using CentralLendingApi.Services.Persons.Queries.GetPersonDetail;
+using CentralLendingApi.Services.Persons.Queries.GetPersonsList;
+using CentralLendingApi.Services.Projects.Queries.GetProjectDetail;
+using CentralLendingApi.Services.Projects.Queries.GetProjectsList;
 using HMapper;
 namespace CentralLendingApi.Services.Mappers
 {
@@ -7,15 +12,12 @@ namespace CentralLendingApi.Services.Mappers
     {
         public static void Init(IMapperAPIInitializer initializer)
         {
-            initializer.Map<Person, PersonDto>();
-            initializer.Map<PersonDto, Person>();
-            initializer.Map<ProjectDto, Project>();
-            initializer.Map<Project, ProjectDto>();
-
-            initializer.Map<PersonProject, PersonProjectDto>();
-            initializer.Map<PersonProjectDto, PersonProject>()
-                .WithMember(x => x.Person, pp => pp.Ignore())
-                .WithMember(x => x.Project, pp => pp.Ignore());
+            initializer.Map<UpdatePersonCommand, Person>();
+            initializer.Map<Project, ProjectDetailModel>();
+            initializer.Map<Project, ProjectLookupModel>();
+            initializer.Map<Person, PersonLookupModel>();
+            initializer.Map<Person, PersonDetailModel>();
+            initializer.Map<AddPersonProjectCommand, PersonProject>();
         }
     }
 }
